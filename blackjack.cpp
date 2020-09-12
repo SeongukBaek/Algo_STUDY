@@ -1,26 +1,27 @@
 #include <iostream>
 #include <cstring>
 #include <cstdio>
-//ÁÖ¾îÁö´Â Ä«µå Áß 3ÀåÀ» »Ì¾Æ 
-//ÁÖ¾îÁø ¼ıÀÚ¸¦ ³ÑÁö ¾Ê´Â ÃÖ´ëÀÇ ÇÕÀ» ±¸ÇÏ´Â ¹®Á¦
-//->»ïÁß for¹®À¸·Î ÁÖ¾îÁø ¼ıÀÚ¸¦ ³ÑÁö ¾ÊÀ¸¸é¼­ ÃÖ´ëÀÎ °ªÀ» max¿¡ °è¼Ó ÀúÀå
+//ì£¼ì–´ì§€ëŠ” ì¹´ë“œ ì¤‘ 3ì¥ì„ ë½‘ì•„ 
+//ì£¼ì–´ì§„ ìˆ«ìë¥¼ ë„˜ì§€ ì•ŠëŠ” ìµœëŒ€ì˜ í•©ì„ êµ¬í•˜ëŠ” ë¬¸ì œ
+//->ì‚¼ì¤‘ forë¬¸ìœ¼ë¡œ ì£¼ì–´ì§„ ìˆ«ìë¥¼ ë„˜ì§€ ì•Šìœ¼ë©´ì„œ ìµœëŒ€ì¸ ê°’ì„ maxì— ê³„ì† ì €ì¥
 using namespace std;
 
 void countsum(int* list, int size, int sum)
 {
 	int max = 0;
 
-	for (int i = 0; i < size-2; i++)
-	{
-		for (int j = i + 1; j < size-1; j++)
-		{
+	for (int i = 0; i < size - 2; i++)
+		for (int j = i + 1; j < size - 1; j++)
 			for (int k = j + 1; k < size; k++)
 			{
-				if ((list[i]+list[j]+list[k]) >= max && sum >= (list[i] + list[j] + list[k]))
+				if ((list[i] + list[j] + list[k] == sum))
+				{
 					max = list[i] + list[j] + list[k];
-			}
-		}
-	}
+					break;
+				}
+				else if ((list[i] + list[j] + list[k]) >= max && sum >= (list[i] + list[j] + list[k]))
+					max = list[i] + list[j] + list[k];
+			}			
 	cout << max;
 }
 
