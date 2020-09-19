@@ -6,8 +6,10 @@
 using namespace std;
 //회의 최대 개수
 
-bool sort_seccol(const vector<int>& a, const vector<int>& b) //2차원 배열의 두번째 열 기준 정렬
+bool comp(const vector<int>& a, const vector<int>& b)
 {
+	if (a[1] == b[1])
+		return a[0] < b[0];
 	return a[1] < b[1];
 }
 
@@ -21,7 +23,7 @@ int main()
 		for (int j = 0; j < 2; j++)
 			cin >> arr[i][j];
 
-	sort(arr.begin(), arr.end(), sort_seccol);// 두번째 열 기준 정렬
+	sort(arr.begin(), arr.end(), comp);// 두번째 열 기준 정렬
 
 	stime = arr[0][0];
 	ftime = arr[0][1];
@@ -31,7 +33,7 @@ int main()
 		{
 			ftime = arr[i][1];
 			cnt++;
-		}	
+		}
 	}
 	cout << cnt;
 	arr.clear();
