@@ -2,7 +2,7 @@
 
 using namespace std;
 int N;
-int dp[1001][10];
+int dp[1000][10];
 
 int ascent(int num);
 
