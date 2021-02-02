@@ -13,7 +13,11 @@ int main() {
 		dp[0][i] = 1;
 	}
 
-	dp_stair(N);
+	//dp_stair(N);
+
+	for (int i = 0; i < 1000; i++) {
+		cout << rand()%1000 << " ";
+	}
 	return 0;
 }
 
