@@ -3,7 +3,7 @@
 
 using namespace std;
 
-int N, cnt = 0;
+int N, max_dp = 0;
 int* arr;
 int* dp;
 
@@ -17,10 +17,17 @@ int main() {
 		dp[i] = 1;
 	}
 
-	sort(dp, dp + N);
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < i; j++) {
+			if ((arr[i] > arr[j]) && dp[i] <= dp[j]) {
+				dp[i] = dp[j] + 1;
+			}
+			if (max_dp < dp[i])
+				max_dp = dp[i];
+		}
+	}
 
-	cout << dp[N - 1];
-
+	cout << N - max_dp;
 	delete[] arr;
 	delete[] dp;
 	return 0;
