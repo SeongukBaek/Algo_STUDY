@@ -2,9 +2,12 @@
 
 using namespace std;
 
-int row, col, cnt = 0;
+int row, col;
 int** map;
 int** dp;
+int x_ar[4] = { -1, 0, 0, 1 };
+int y_ar[4] = { 0, -1, 1, 0 };
+
 int check_down(int x, int y);
 
 int main() {
@@ -17,13 +20,11 @@ int main() {
 		dp[i] = new int[col];
 		for (int j = 0; j < col; j++) {
 			cin >> map[i][j];
-			dp[i][j] = 0;
+			dp[i][j] = -1;
 		}
 	}
 
-	check_down(0, 0);
-
-	cout << cnt;
+	cout << check_down(0, 0);
 
 	for (int i = 0; i < row; i++) {
 		delete[] map[i];
@@ -35,35 +36,19 @@ int main() {
 }
 
 int check_down(int x, int y) {
-	if (dp[x][y] == 0) {
-		dp[x][y] = 1;
-		if (x == row - 1 && y == col - 1) {
-			cnt++;
-			return 0;
-		}
-		if (x - 1 >= 0) { //위쪽 확인
-			if (map[x - 1][y] < map[x][y]) {
-				check_down(x - 1, y);
-			}
-		}
-		if (y - 1 >= 0) { //왼쪽 확인
-			if (map[x][y - 1] < map[x][y]) {
-				check_down(x, y - 1);
-			}
-		}
-		if (y + 1 < col) { //오른쪽 확인
-			if (map[x][y + 1] < map[x][y]) {
-				check_down(x, y + 1);
-			}
-		}
-		if (x + 1 < row) { //아래쪽 확인
-			if (map[x + 1][y] < map[x][y]) {
-				check_down(x + 1, y);
-			}
-		}
+	if (x == row - 1 && y == col - 1)
+		return 1;
+	else if (dp[x][y] != -1)
+		return dp[x][y];
+
+	dp[x][y] = 0;
+	for (int i = 0; i < 4; i++) {
+		int new_x = x + x_ar[i];
+		int new_y = y + y_ar[i];
+
+		if (new_x >= 0 && new_x < row && new_y >= 0 && new_y < col)
+			if (map[x][y] > map[new_x][new_y])
+				dp[x][y] += check_down(new_x, new_y);
 	}
-	else {
-		cnt++;
-		return 0;
-	}
+	return dp[x][y];
 }
