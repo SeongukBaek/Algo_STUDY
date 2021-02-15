@@ -1,5 +1,6 @@
 #include <iostream>
-#include <cstring>
+#include <queue>
+#include <algorithm>
 
 using namespace std;
 
@@ -9,7 +10,7 @@ int** visited;
 int x_ar[4] = { -1, 0, 1, 0 };
 int y_ar[4] = { 0, 1, 0, -1 };
 
-int maze(int x, int y, int block);
+int maze(pair<int, int> input);
 
 int main() {
 	int cnt = 0;
@@ -26,16 +27,7 @@ int main() {
 		}
 	}
 
-	for (int i = 0; i < row; i++) {
-		for (int j = 0; j < col; j++) {
-			if (map[i][j] == '1' && visited[i][j] == -1) {
-				cnt = maze(i, j, cnt);
-			}
-			if (min_cnt > cnt)
-				min_cnt = cnt;
-		}
-	}
-	cout << min_cnt;
+	maze(make_pair(0, 0));
 
 	for (int i = 0; i < row; i++) {
 		delete[] map[i];
@@ -45,22 +37,34 @@ int main() {
 	delete[] visited;
 	return 0;
 }
-// 탐색하다가 더이상 탐색할 수 없는 경우 리턴값 문제 생각
-int maze(int x, int y, int block) {
-	if (x == row - 1 && y == col - 1)
-		return block + 1;
-	if (visited[x][y] == -1) {
-		block++;
-		visited[x][y] = 1;
-		
-		for (int i = 0; i < 4; i++) {
-			int new_x = x + x_ar[i];
-			int new_y = y + y_ar[i];
 
-			if (new_x >= 0 && new_x < row && new_y >= 0 && new_y < col)
-				if (map[new_x][new_y] == '1')
-					block = maze(new_x, new_y, block);
+int maze(pair<int, int> input) {
+	if (input.first == row - 1 && input.second == col - 1)
+		return 0;
+	else {
+		queue<pair<int, int>> q;
+		pair<int, int> cur = input;
+		int block = 1;
+		q.push(input);
+		visited[cur.first][cur.second] = 1;
+		while (!q.empty()) {
+			cur = q.front();
+			q.pop();
+
+			for (int i = 0; i < 4; i++) {
+				pair<int, int> next = make_pair(input.first + x_ar[i], input.second + y_ar[i]);
+
+				if (next.first >= 0 && next.first < row && next.second >= 0 && next.second < col) {
+					if (map[next.first][next.second] == '1' && visited[next.first][next.second] != 1) {
+						visited[next.first][next.second] = 1;
+						block++;
+						if (next.first == row - 1 && next.second == col - 1)
+							return block;
+						q.push(make_pair(next.first, next.second));
+					}
+				}
+			}
+			maze(cur);
 		}
 	}
-	return block;
 }
