@@ -1,19 +1,18 @@
 #include <iostream>
+#include <utility>
 #include <queue>
-#include <algorithm>
 
 using namespace std;
 
-int row, col, min_cnt = 1000;
+int row, col;
 char** map;
 int** visited;
 int x_ar[4] = { -1, 0, 1, 0 };
 int y_ar[4] = { 0, 1, 0, -1 };
 
-int maze(pair<int, int> input);
+void maze(int x, int y);
 
 int main() {
-	int cnt = 0;
 	cin >> row >> col;
 
 	map = new char* [row];
@@ -27,7 +26,9 @@ int main() {
 		}
 	}
 
-	maze(make_pair(0, 0));
+	visited[0][0] = 1;
+	maze(0, 0);
+	cout << visited[row - 1][col - 1];
 
 	for (int i = 0; i < row; i++) {
 		delete[] map[i];
@@ -38,33 +39,23 @@ int main() {
 	return 0;
 }
 
-int maze(pair<int, int> input) {
-	if (input.first == row - 1 && input.second == col - 1)
-		return 0;
-	else {
-		queue<pair<int, int>> q;
-		pair<int, int> cur = input;
-		int block = 1;
-		q.push(input);
-		visited[cur.first][cur.second] = 1;
-		while (!q.empty()) {
-			cur = q.front();
-			q.pop();
+void maze(int x, int y) {
+	queue <pair<int, int> > q;
+	pair<int, int> cur = make_pair(x, y);
+	q.push(cur);
+	while (!q.empty()) {
+		cur = q.front();
+		q.pop();
+		for (int i = 0; i < 4; i++) {
+			pair<int, int> next = make_pair(cur.first + x_ar[i], cur.second + y_ar[i]);
 
-			for (int i = 0; i < 4; i++) {
-				pair<int, int> next = make_pair(input.first + x_ar[i], input.second + y_ar[i]);
-
-				if (next.first >= 0 && next.first < row && next.second >= 0 && next.second < col) {
-					if (map[next.first][next.second] == '1' && visited[next.first][next.second] != 1) {
-						visited[next.first][next.second] = 1;
-						block++;
-						if (next.first == row - 1 && next.second == col - 1)
-							return block;
-						q.push(make_pair(next.first, next.second));
-					}
+			if (next.first >= 0 && next.first < row && next.second >= 0 && next.second < col) {
+				if (map[next.first][next.second] == '1' && visited[next.first][next.second] == -1) {
+					if (visited[next.first][next.second] == -1 || (visited[next.first][next.second] > visited[cur.first][cur.second] + 1))
+						visited[next.first][next.second] = visited[cur.first][cur.second] + 1;
+					q.push(make_pair(next.first, next.second));
 				}
 			}
-			maze(cur);
 		}
 	}
 }
