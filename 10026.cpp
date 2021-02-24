@@ -2,7 +2,7 @@
 
 using namespace std;
 
-int N, weak_cnt = 0, normal_cnt = 0, redgreen = 0, blue = 0;
+int N, weak_cnt = 0, normal_cnt = 0;
 char** picture;
 int** visited;
 int x_ar[4] = { -1, 0, 0, 1 };
