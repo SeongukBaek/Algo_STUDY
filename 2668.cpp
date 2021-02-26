@@ -1,87 +1,57 @@
 #include <iostream>
-<<<<<<< HEAD
-
-using namespace std;
-
-int N;
-int* nums;
-
-void dfs(int idx);
-=======
 #include <algorithm>
 
 using namespace std;
 
-int N, cnt = 0;
+int N, cnt = 0, in = 0;
 int* nums;
 int* visited;
-int* ans;
+int ans[100];
+int index_arr[100];
 
-int dfs(int start, int idx);
->>>>>>> 79334cbe37da4e9e95c32e6b0b78ac1c143db20e
+void dfs(int idx, int num);
 
 int main() {
 	cin >> N;
 
-<<<<<<< HEAD
-	nums = new int[N];
-	for (int i = 0; i < N; i++)
-		cin >> nums[i];
-
-	dfs(0);
-
-	return 0;
-}
-
-void dfs(int idx) {
-	for (int i = idx; i < N; i++) {
-		dfs(nums[idx]);
-	}
-=======
 	nums = new int[N + 1];
 	visited = new int[N + 1];
-	nums[0] = visited[0] = -1;
-	ans = new int[N];
+	nums[0] = visited[0] = 1;
 	for (int i = 1; i <= N; i++) {
 		cin >> nums[i];
 		if (i == nums[i]) {
 			visited[i] = 1;
 			ans[cnt++] = i;
 		}
-		else {
+		else
 			visited[i] = -1;
-			ans[i - 1] = 0;
-		}
 	}
-
-	for (int i = 1; i <= N; i++) {
+		
+	for (int i = 1; i <= N; i++)
 		if (visited[i] == -1)
-			dfs(i, i);
-	}
+			dfs(i, nums[i]);
 
 	sort(ans, ans + cnt);
-
 	cout << cnt << endl;
 	for (int i = 0; i < cnt; i++)
-		cout << ans[i];
-
-	delete[] nums, visited, ans;
+		cout << ans[i] << endl;
+	delete[] nums, visited;
 	return 0;
 }
 
-int dfs(int start, int idx) {
-	int check = 0;
+void dfs(int idx, int num) {
 	if (visited[idx] == -1) {
+		index_arr[in++] = idx;
 		visited[idx] = 1;
-		check = dfs(start, nums[idx]);
-		if (check == 1)
-			ans[cnt++] = start;
-		start = idx;
+		for (int i = in - 1; i >= 0; i--) {
+			int cur = index_arr[i];
+			if (cur == num) {
+				for (int j = i; j < in; j++)
+					ans[cnt++] = index_arr[j];
+				return;
+			}
+		}
+		dfs(num, nums[num]);
 	}
-	else {
-		if (start == idx)
-			return 1;
-	}
-	return 0;
->>>>>>> 79334cbe37da4e9e95c32e6b0b78ac1c143db20e
+	in = 0;
 }

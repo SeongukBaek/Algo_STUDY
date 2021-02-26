@@ -1,0 +1,53 @@
+#include <iostream>
+#include <stack>
+
+using namespace std;
+
+int N, cnt = 0;
+int* nums;
+int* visited;
+int ans[100];
+
+void dfs(int idx, int num);
+
+int main() {
+	cin >> N;
+
+	nums = new int[N + 1];
+	visited = new int[N + 1];
+	nums[0] = visited[0] = 1;
+	for (int i = 0; i < N; i++) {
+		cin >> nums[i + 1];
+		visited[i + 1] = -1;
+	}
+		
+	for (int i = 1; i <= N; i++) {
+		if (visited[i] == -1)
+			dfs(i, nums[i]);
+	}
+
+	cout << cnt << endl;
+	for (int i = 0; i < cnt; i++)
+		cout << ans[i] << endl;
+	delete[] nums, visited, ans;
+	return 0;
+}
+
+void dfs(int idx, int num) {
+	stack <int> s;
+	s.push(idx);
+	if (visited[idx] == -1) {
+		visited[idx] = 1;
+		if (nums[num] == idx) {
+			ans[cnt++] = idx;
+		}
+		else
+			dfs(num, nums[num]);
+	}
+}
+
+4
+2 3 4  1 
+
+9
+5 6 2 8 3 4 2 7 6
