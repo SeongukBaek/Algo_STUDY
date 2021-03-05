@@ -1,75 +1,45 @@
 #include <iostream>
+#include <vector>
+#include <cstring>
 using namespace std;
 
-void dfs(int idx);
-void isExist(int idx, int friends);
+void dfs(int idx, int depth);
 
-int N, M, get_friends = 0;
-pair <int, int> f[2000];
+int N, M;
+vector<int> v[2000];
 int visited[2000];
 
 int main() {
 	cin >> N >> M;
+	int m = 0;
 
-	for (int i = 0; i < M;i++)
-		cin >> f[i].first >> f[i].second;
-
-	for (int j = 0; j < N; j++)
-		visited[f[j].first] = visited[f[j].second] = -1;
-
-	for (int i = 0; i < M; i++) {
-		isExist(i, 1);
-		if (get_friends == 1)
-			break;
+	while (m != M) {
+		int a, b;
+		cin >> a >> b;
+		v[a].push_back(b);
+		v[b].push_back(a);
+		visited[m++] = -1;
 	}
-	cout << get_friends;
+
+	for (int i = 0; i < N; i++)
+		dfs(i, 0);
+
+	cout << "0";
 	return 0;
 }
 
-void dfs(int idx, int friends) {
-	if (friends == 4)
-		get_friends = 1;
-	else {
-		visited[idx] = 1;
-		for (int i = 0; i < M; i++) {
-			if (visited[i] == -1 && f[i]) {
-				friends++;
-				dfs(i, friends);
-			}
-		}
+void dfs(int idx, int depth) {
+	if (depth >= 4) {
+		cout << "1";
+		exit(0);
 	}
-}
 
-void isExist(int idx, int friends) {
-	if (friends == 4) {
-		get_friends = 1;
-		return;
+	depth++;
+	visited[idx] = 1;
+	for (vector<int>::size_type i = 0; i < v[idx].size(); i++) {
+		if (visited[v[idx][i]] == -1)
+			dfs(v[idx][i], depth);
 	}
-	else {
-		int a = f[idx].first, b = f[idx].second;
-		if (visited[a] == -1) {
-			visited[a] = 1;
-			for (int i = 0; i < M; i++) {
-				if (visited[f[i].first] == -1) {
-					if (f[i].first == a || f[i].second == a) {
-						friends++;
-						isExist(i, friends);
-					}
-				}
-			}
-			visited[a] = -1;
-		}
-		if (visited[b] == -1) {
-			visited[b] = 1;
-			for (int i = 0; i < M; i++) {
-				if (visited[f[i].second] == -1) {
-					if (f[i].first == b || f[i].second == b) {
-						friends++;
-						isExist(i, friends);
-					}
-				}
-			}
-			visited[b] = -1;
-		}
-	}
+	visited[idx] = -1;
+	depth--;
 }
