@@ -33,7 +33,6 @@ void dfs(int idx, int depth) {
 		cout << "1";
 		exit(0);
 	}
-
 	depth++;
 	visited[idx] = 1;
 	for (vector<int>::size_type i = 0; i < v[idx].size(); i++) {
