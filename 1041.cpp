@@ -23,7 +23,7 @@ int main() {
 			int sum = cube();
 			if (sum < min_sum)
 				min_sum = sum;
-		}
+		} 
 	}
 
 	cout << min_sum;
