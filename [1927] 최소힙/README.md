@@ -34,3 +34,4 @@ for (int i = 0; i < N; i++) {
 ## :black_nib: **Review**
 
 - 우선순위 큐를 오름차순으로 선언
+- 최대 힙을 원하는 경우, 우선순위 큐 선언 시 `greater<int>`를 제거
