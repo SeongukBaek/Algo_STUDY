@@ -4,40 +4,61 @@
 #include <cmath>
 using namespace std;
 
-int sp(int goal);
+void sp();
+int short_dist(int goal);
+
 int v, e, s;
-int graph[20001][20001];
-priority_queue<int, vector<int>, greater<int>> pq;
+vector <pair <int, int>>graph[20001];
+int* cost;
+
 int main() {
 	cin >> v >> e >> s;
+
+	cost = new int[v + 1];
+	fill_n(cost, v + 1, 11);
+	cost[s] = 0;
 
 	for (int i = 0; i < e; i++) {
 		int a, b, c;
 		cin >> a >> b >> c;
-		graph[a][b] = c;
+		graph[a].push_back(make_pair(b, c));
 	}
 
-	for (int i = 0; i < v; i++) {
-		int path = sp(i + 1);
-		if (path == -1)
+	sp();
+
+	for (int i = 1; i < v + 1; i++) {
+		if (cost[i] == 11)
 			cout << "INF" << "\n";
 		else
-			cout << path << "\n";
+			cout << cost[i] << "\n";
 	}
 
 	return 0;
 }
 
-int sp(int goal) {
-	int p = -1;
-	if (s == goal)
-		p = 0;
-	else {
-		for (int i = 0; i < v; i++) {
-			for (int j = 0; j < v; j++) {
-
-			}
+void sp() {
+	for (int i = 1; i < v + 1; i++) {
+		if (s == i)
+			cost[i] = 0;
+		else {
+			cost[i] = short_dist(i);
 		}
 	}
-	return p;
+}
+
+int short_dist(int goal) {
+	int w = cost[goal];
+
+	queue <int> q;
+	for (int k = 1; k < v + 1; k++) {
+		q.push(k);
+		for (int i = k; i < v + 1; i++) {
+			if (w > graph[s][k] + graph[k][goal])
+				w = graph[s][k] + graph[k][goal];
+		}
+		
+	}
+		
+	
+	return w;
 }
