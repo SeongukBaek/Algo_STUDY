@@ -4,70 +4,79 @@
 #include <queue>
 using namespace std;
 
+struct graph {
+	int x;
+	int y;
+	int w;
+};
+
 int N, M, K, cost = 0;
-vector <int> parents, generator;
-vector <pair<int, int>> graph[100001];
+bool generator[1001];
+vector <int> parent;
+vector <graph> g;
 
-int findParent(int a) {
-	if (a == parents[a])
+bool cmp(graph a, graph b) {
+	if (a.w == b.w)
+		return a.x < b.x;
+	return a.w < b.w;
+}
+
+int getRoot(int a) {
+	if (a == parent[a])
 		return a;
-	return parents[a] = findParent(parents[a]);
+	return parent[a] = getRoot(parent[a]);
 }
 
-bool unionParent(int u, int v) {
-	u = findParent(u);
-	v = findParent(v);
-	if(u == v)
-		return ;
-	if(generator[u])
-		parents[v] = u;
-	else if(generator[v])
-		parents[u] = v;
+bool checkParent(int a, int b) {
+	int r1 = getRoot(a);
+	int r2 = getRoot(b);
+	if ((r1 == r2) || (generator[r1] && generator[r2]))
+		return true;
+	return false;
+}
+
+void unionParent(int a, int b) {
+	int r1 = getRoot(a);
+	int r2 = getRoot(b);
+	
+	if (r1 == r2)
+		return;
+	if (generator[r1])
+		parent[r2] = r1;
+	else if (generator[r2])
+		parent[r1] = r2;
 	else
-		parents[v] = u;
-}
-
-void prim(int s) {
-	visited[s] = 1;
-	priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
-
-	for (int i = 0; i < graph[s].size(); i++) {
-		pq.push(make_pair(graph[s][i].second, graph[s][i].first));
-	}
-	while (!pq.empty()) {
-		int cur = pq.top().second;
-		int curCost = pq.top().first;
-		pq.pop();
-
-		cost += curCost;
-		if (visited[cur] == 1) break;
-		visited[cur] = 1;
-
-		for (int i = 0; i < graph[cur].size(); i++)
-			pq.push(make_pair(graph[cur][i].second, graph[cur][i].first));
-			
-	}
+		parent[r2] = r1;
 }
 
 int main() {
+	int a, b, c;
 	cin >> N >> M >> K;
-	visited.resize(N + 1);
+	parent.resize(N + 1);
+
 	for (int i = 0; i < K; i++) {
 		int s;
 		cin >> s;
-		visited[s] = 1;
+		generator[s] = true;
 	}
 
-	for (int i = 1; i < M + 1; i++) {
-		int a, b, c;
+	for (int i = 0; i < M; i++) {
+		graph tmp;
 		cin >> a >> b >> c;
-		graph[a].push_back(make_pair(b, c));
-		graph[b].push_back(make_pair(a, c));
+		tmp.x = a, tmp.y = b, tmp.w = c;
+		g.push_back(tmp);
 	}
 
-	for (int i = 1; i < N + 1; i++) {
-		if (visited[i] != 1)
-			prim(i);
+	sort(g.begin(), g.end(), cmp);
+
+	for (int i = 1; i < N + 1; i++)
+		parent[i] = i;
+
+	for (int i = 0; i < g.size(); i++) {
+		if (!checkParent(g[i].x, g[i].y)) {
+			unionParent(g[i].x, g[i].y);
+			cost += g[i].w;
+		}
 	}
 	cout << cost;
 	return 0;
