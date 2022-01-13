@@ -1,6 +1,6 @@
 # [1707] 이분 그래프 - Java
 
-## :pushpin: **Alg
+## :pushpin: **Algorithm**
 그래프 이론, 그래프 탐색, BFS, DFS
 
 ## :round_pushpin: **Logic**
