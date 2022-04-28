@@ -2,7 +2,7 @@
 
 ## :pushpin: **Algorithm**
 
-수학
+순열
 
 ## :round_pushpin: **Logic**
 
