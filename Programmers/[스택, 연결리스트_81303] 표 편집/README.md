@@ -1,4 +1,4 @@
-# [81302] 거리두기 확인하기 - Java
+# [81303] 표 편집 - Java
 
 ## :pushpin: **Algorithm**
 
