@@ -4,18 +4,12 @@ import java.io.*;
 class Tree {
     int x;
     int y;
-    // 상하좌우에 나무가 있는 지역의 개수
-    int treeCount;
     // 상하좌우에 나무가 없는 지역 방향 저장
     List<Integer> emptyDir;
 
     public Tree(int x, int y) {
         this.x = x;
         this.y = y;
-    }
-
-    void setTreeCount(int treeCount) {
-        this.treeCount = treeCount;
     }
 
     void setEmptyDir(List<Integer> emptyDir) {
@@ -60,7 +54,9 @@ public class Main {
         while (m > 0) {
             treeList = setTreeList();
 
-            // 1. 나무 성장 - 각 나무별 상하좌우 카운트해서 성장, 카운트 정보도 함께 저장
+            // 1. 나무 성장
+            // 각 나무별 상하좌우에 있는 나무의 개수를 카운트해서 성장합니다.
+            // 그리고 아무 것도 없는 지역에 대한 방향 또한 저장해서 번식에 사용할 수 있도록 합니다.
             for (Tree tree : treeList) {
                 int treeCount = 0;
                 List<Integer> empty = new ArrayList<>();
@@ -78,19 +74,18 @@ public class Main {
                     }
                 }
 
-                tree.setTreeCount(treeCount);
                 tree.setEmptyDir(empty);
 
                 if (treeCount > 0)
                     map[tx][ty] += treeCount;
             }
 
-            // 2. 여전히 나무 위치를 저장해둠. 성장 로직에서 나무 수만 증가했음. 이를 이용해 번식을 진행
-            // 번식이 가능한 지역은 나무가 없고, 제초제도 없는 지역!
+            // 2. 번식 실행
+            // 성장 로직을 수행하면서, 아무것도 없는 지역에 대한 방향을 함께 저장했습니다.
+            // 따라서 번식 과정에서는 이 방향 리스트에 대해 번식을 수행하면 됩니다.
             for (Tree tree : treeList) {
                 int tx = tree.x;
                 int ty = tree.y;
-                int tc = tree.treeCount;
                 List<Integer> emptyTreeDir = tree.emptyDir;
                 int tec = emptyTreeDir.size();
 
@@ -111,8 +106,8 @@ public class Main {
             treeList = setTreeList();
 
             // 3. 박멸 실행
-            // 각 나무 위치에서 대각선 방향으로 k칸만큼 약 쳐보고, 최대가 되는 칸 찾기
-            // 이때 N,N부터 수행해서 조건을 만족시키자.
+            // 3-1. 각 나무 위치에서 대각선 방향으로 k칸만큼 제초제를 뿌려보고, 최대가 되는 위치를 찾습니다.
+            // 이때 제일 큰 좌표부터 시작해서 조건에 부합하도록 합니다.
             int max = 0;
             int maxX = n - 1;
             int maxY = n - 1;
@@ -142,13 +137,13 @@ public class Main {
 
             answer += max;
 
-            // 제초제 -1!
+            // 제초제가 1년이 지났기 때문에 -1 해줍니다.
             for (int i = 0; i < n; i++)
                 for (int j = 0; j < n; j++)
                     if (herbicide[i][j] > 0)
                         herbicide[i][j]--;
 
-            // 박멸 실행
+            // 3-2. 박멸 시작
             herbicide[maxX][maxY] = c;
             map[maxX][maxY] = 0;
             for (int d = 0; d < 4; d++) {
@@ -174,6 +169,7 @@ public class Main {
         return x >= 0 && x < n && y >= 0 && y < n;
     }
 
+    // map을 탐색하면서 나무의 위치를 저장하는 List를 생성해서 반환합니다.
     private static List<Tree> setTreeList() {
         List<Tree> tmp = new ArrayList<>();
 
@@ -183,21 +179,5 @@ public class Main {
                     tmp.add(new Tree(i, j));
 
         return tmp;
-    }
-
-    private static void print() {
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++)
-                System.out.print(map[i][j] + " ");
-            System.out.println();
-        }
-    }
-
-    private static void herbPrint() {
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++)
-                System.out.print(herbicide[i][j] + " ");
-            System.out.println();
-        }
     }
 }

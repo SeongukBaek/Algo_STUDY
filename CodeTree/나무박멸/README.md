@@ -10,18 +10,12 @@
 class Tree {
     int x;
     int y;
-    // 상하좌우에 나무가 있는 지역의 개수
-    int treeCount;
     // 상하좌우에 나무가 없는 지역 방향 저장
     List<Integer> emptyDir;
 
     public Tree(int x, int y) {
         this.x = x;
         this.y = y;
-    }
-
-    void setTreeCount(int treeCount) {
-        this.treeCount = treeCount;
     }
 
     void setEmptyDir(List<Integer> emptyDir) {
@@ -31,7 +25,7 @@ class Tree {
 ```
 
 - 나무 정보를 저장하는 클래스
-  - 상하좌우에 나무가 있는 지역의 개수와 상하좌우에 나무가 없는 지역 방향을 저장하여 성장과 번식에 사용했다.
+  - 상하좌우에 나무가 없는 지역 방향을 저장하여 성장과 번식에 사용했다.
 
 ```java
 // 1. 나무 성장 - 각 나무별 상하좌우 카운트해서 성장, 카운트 정보도 함께 저장
@@ -45,7 +39,6 @@ for (Tree tree : treeList) {
         ...
     }
 
-    tree.setTreeCount(treeCount);
     tree.setEmptyDir(empty);
 
     if (treeCount > 0)
@@ -57,7 +50,6 @@ for (Tree tree : treeList) {
 for (Tree tree : treeList) {
     int tx = tree.x;
     int ty = tree.y;
-    int tc = tree.treeCount;
     List<Integer> emptyTreeDir = tree.emptyDir;
     int tec = emptyTreeDir.size();
 
@@ -75,7 +67,7 @@ treeList = setTreeList();
 
 // 3. 박멸 실행
 // 각 나무 위치에서 대각선 방향으로 k칸만큼 약 쳐보고, 최대가 되는 칸 찾기
-// 이때 N,N부터 수행해서 조건을 만족시키자.
+// 이때 가장 큰 좌표부터 수행해서 조건을 만족시키자.
 int max = 0;
 int maxX = n - 1;
 int maxY = n - 1;
