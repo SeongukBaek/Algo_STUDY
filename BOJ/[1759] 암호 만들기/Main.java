@@ -27,6 +27,15 @@ public class Main {
         makePossiblePasswords(new StringBuilder(), new boolean[C], 0, 0, 0);
     }
 
+    /**
+     * 가능한 암호를 생성
+     *
+     * @param password 생성되는 암호
+     * @param isVisited 특정 문자가 암호에 포함되는지 여부
+     * @param vowelCnt 암호에 포함된 모음의 개수
+     * @param consonantCnt 암호에 포함된 자음의 개수
+     * @param now 현재 확인해야 하는 문자열 인덱스
+     */
     private static void makePossiblePasswords(StringBuilder password, boolean[] isVisited, int vowelCnt, int consonantCnt, int now) {
         if (password.length() == L && vowelCnt >= LEAST_VOWEL_COUNT && consonantCnt >= LEAST_CONSONANT_COUNT) {
             print(password);
@@ -51,6 +60,11 @@ public class Main {
         }
     }
 
+    /**
+     * 문자열 출력
+     *
+     * @param password 출력해야 하는 암호
+     */
     private static void print(StringBuilder password) {
         System.out.println(password);
     }
