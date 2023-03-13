@@ -1,79 +1,100 @@
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
-class JustNowMusic {
-    // Map의 순서 보장을 위해 LinkedHashMap 사용
-    LinkedHashMap<String, String> music;
+class Solution {
+    private static Map<String, String> musicInfos;
 
-    public JustNowMusic(String[] musicinfos) {
-        music = new LinkedHashMap<>();
+    public String solution(String m, String[] musicinfos) {
+        musicInfos = new LinkedHashMap<>();
 
-        for (String mi : musicinfos) initMusic(mi);
-    }
+        // 우선 주어진 곡 정보들을 재생된 기간동안의 멜로디로 잘라 순서대로 저장
+        for (String musicInfo : musicinfos) {
+            String[] infos = musicInfo.split(",");
 
-    private void initMusic(String mi) {
-        String[] info = mi.split(",");
+            int start = parseTime(infos[0]);
+            int end = parseTime(infos[1]);
 
-        int runTime = parsing(info[0], info[1]);
+            String song = infos[2];
+            String melody = infos[3];
 
-        StringBuilder score = new StringBuilder();
+            int time = end - start;
+            // 끝나는 시간이 00:00이면, 재생 시간이 음수
+            if (time < 0) {
+                time *= -1;
+            }
 
-        info[3] = convert(info[3]);
-
-        // 재생 시간만큼 악보 반복
-        for (int i = 0, idx = 0; i < runTime; i++) {
-            if (i % info[3].length() == 0) idx = 0;
-            score.append(info[3].charAt(idx));
-            idx++;
+            saveCutOffMelody(song, melody, time);
         }
 
-        // 제목과 악보를 Map에 저장
-        music.put(info[2], score.toString());
-    }
+        String thatSong = "";
+        int maxTime = 0;
+        m = convertSharp(m);
 
-    // #이 들어가는 음 치환
-    private String convert(String s) {
-        return s.replace("C#", "c").replace("D#", "d").replace("F#", "f").replace("G#", "g").replace("A#", "a");
-    }
+        for (Map.Entry<String, String> music : musicInfos.entrySet()) {
+            String song = music.getKey();
+            String melody = music.getValue();
 
-    private int parsing(String info1, String info2) {
-        int startTime = getTime(info1);
-        int endTime = getTime(info2);
+            // 기억하는 멜로디를 포함하지 않으면 패스
+            if (!melody.contains(m)) {
+                continue;
+            }
 
-        return endTime - startTime;
-    }
-
-    private int getTime(String info) {
-        String[] time = info.split(":");
-        int hour = Integer.parseInt(time[0]);
-        int min = Integer.parseInt(time[1]);
-
-        return hour * 60 + min;
-    }
-
-    public String findMusic(String m) {
-        m = convert(m);
-        int maxPlayTime = -1;
-
-        String answer = "";
-        for (Map.Entry<String, String> entry : music.entrySet()) {
-            String score = entry.getValue();
-            int playTime = score.length();
-
-            // 기억한 멜로디를 포함하고, 재생 시간이 제일 긴 음악인 경우 answer에 해당 제목 저장
-            if (score.contains(m) && playTime > maxPlayTime) {
-                answer = entry.getKey();
-                maxPlayTime = playTime;
+            if (maxTime < melody.length()) {
+                thatSong = song;
+                maxTime = melody.length();
             }
         }
 
-        return maxPlayTime == -1? "(None)" : answer;
+        return maxTime == 0 ? "(None)" : thatSong;
     }
-}
 
-class Solution {
-    public String solution(String m, String[] musicinfos) {
-        JustNowMusic jnm = new JustNowMusic(musicinfos);
+    /**
+     * 시간 파싱해서 분 단위로 반환
+     * */
+    private static int parseTime(String time) {
+        String[] times = time.split(":");
+        return Integer.parseInt(times[0]) * 60 + Integer.parseInt(times[1]);
+    }
 
-        return jnm.findMusic(m);
+    /**
+     * 주어진 곡 정보를 가지고, 재생 기간동안 재생한 멜로디를 추출해 저장
+     * */
+    private static void saveCutOffMelody(String song, String melody, int duration) {
+        StringBuilder cutOffMelody = new StringBuilder();
+        int melodyIndex = 0;
+
+        for (int index = 0; index < duration; index++) {
+            if (melodyIndex == melody.length()) {
+                melodyIndex = 0;
+            }
+
+            char current = melody.charAt(melodyIndex);
+            // 만약 다음 문자가 #이라면, 소문자로 치환해서 저장
+            if (melodyIndex + 1 < melody.length() && melody.charAt(melodyIndex + 1) == '#') {
+                current = Character.toLowerCase(current);
+                melodyIndex++;
+            }
+            cutOffMelody.append(current);
+            melodyIndex++;
+        }
+
+        musicInfos.put(song, cutOffMelody.toString());
+    }
+
+    /**
+     * 기억하는 멜로디에서 #을 치환하여 반환
+     * */
+    private static String convertSharp(String melody) {
+        StringBuilder result = new StringBuilder();
+        for (int index = 0; index < melody.length(); index++) {
+            char current = melody.charAt(index);
+            if (index + 1 < melody.length() && melody.charAt(index + 1) == '#') {
+                current = Character.toLowerCase(current);
+                index++;
+            }
+            result.append(current);
+        }
+        return result.toString();
     }
 }

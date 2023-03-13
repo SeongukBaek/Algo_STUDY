@@ -7,32 +7,40 @@
 ## :round_pushpin: **Logic**
 
 ```java
-// #이 들어가는 음 치환
-private String convert(String s) {
-    return s.replace("C#", "c").replace("D#", "d").replace("F#", "f").replace("G#", "g").replace("A#", "a");
+private static String convertSharp(String melody) {
+    StringBuilder result = new StringBuilder();
+    for (int index = 0; index < melody.length(); index++) {
+        char current = melody.charAt(index);
+        if (index + 1 < melody.length() && melody.charAt(index + 1) == '#') {
+            current = Character.toLowerCase(current);
+            index++;
+        }
+        result.append(current);
+    }
+    return result.toString();
 }
 ```
-- `#` 이 들어가는 경우 `contains()` 로 포함 여부 확인 시 추가 조건이 필요해서 치환하는 방식을 사용했다.
+- `#` 이 들어가는 경우 그 앞의 대문자를 소문자로 변경하도록 치환한다.
 
 ```java
-String answer = "";
-for (Map.Entry<String, String> entry : music.entrySet()) {
-    String score = entry.getValue();
-    int playTime = score.length();
-    
-    // 기억한 멜로디를 포함하고, 재생 시간이 제일 긴 음악인 경우 answer에 해당 제목 저장
-    if (score.contains(m) && playTime > maxPlayTime) {
-        answer = entry.getKey();
-        maxPlayTime = playTime;
+for (Map.Entry<String, String> music : musicInfos.entrySet()) {
+    String song = music.getKey();
+    String melody = music.getValue();
+
+    // 기억하는 멜로디를 포함하지 않으면 패스
+    if (!melody.contains(m)) {
+        continue;
+    }
+
+    if (maxTime < melody.length()) {
+        thatSong = song;
+        maxTime = melody.length();
     }
 }
 ```
-- `LinkedHashMap` 에 들어있는 악보를 기억하고 있는 멜로디와 비교하면서,
-  - 해당 멜로드를 포함하고,
-  - 재생 시간이 제일 긴 음악인지를 판단하여 노래 제목을 저장한다.
+- 순서를 저장하는 `LinkedHashMap` 에 담긴 곡 정보를 하나씩 확인하면서 기억하는 멜로디를 포함하고 있는지 확인한다.
 
 ## :black_nib: **Review**
 
-- 재생 시간 조건을 고려했어야 하는 문제였고, 구현해나가던 중 계속 발생하는 실패때문에 질문 게시판을 확인했다.
-- `Map` 을 `for` 문으로 탐색하게 되면 순서가 보장되지 않는다는 점을 깨달았다. 
-- `LinkedHashMap` 을 정리해놓고 적용해보지 못한 사례였다.
+- 주어진 문제의 조건 중, 먼저 입력된 노래순이라는 조건이 있어서, 순서를 유지할 수 있는 자료구조가 필요했다.
+- 또한 #이 붙은 경우 처리가 매우 까다로워서, 이를 치환하는 방법이 주요했다.
