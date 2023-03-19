@@ -1,4 +1,4 @@
-# [14891] 톱니바퀴 - Java
+# [14891] 톱니바퀴
 
 ## :pushpin: **Algorithm**
 
@@ -7,74 +7,42 @@
 ## :round_pushpin: **Logic**
 
 ```java
-class Gear {
-    int[] tooth;
-    boolean spinStatus;
-    int spinDir;
+// 톱니 정보 저장
+saveGears();
 
-    public Gear() {
-        tooth = new int[8];
-        spinStatus = false;
-        spinDir = 0;
-    }
+// 회전 수행
+rotateGears();
 
-    public void clockWise() {
-        int tmp = tooth[7];
-        System.arraycopy(tooth, 0, tooth, 1, 7);
-        tooth[0] = tmp;
-    }
-
-    public void counterClockWise() {
-        int tmp = tooth[0];
-        System.arraycopy(tooth, 1, tooth, 0, 7);
-        tooth[7] = tmp;
-    }
-}
+// 톱니 상태 확인 후 출력
+System.out.println(computePoint());
 ```
 
-- 톱니바퀴의 정보를 저장하는 클래스이다.
-- `clockWise()` 는 톱니를 시계방향으로 돌렸을 때 상태 업데이트를 수행하고, `counterClockWise()` 는 반시계방향에 대한 업데이트를 수행한다.
+- 톱니바퀴의 정보를 저장한다.
+- 회전을 수행한다.
+- 최종 톱니바퀴 상태에 따른 점수를 출력한다.
 
 ```java
-for (int i = 0; i < N; i++) {
-    spins[i] = Arrays.stream(br.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
-    int centerG = spins[i][0] - 1;
-    gears[centerG].spinStatus = true;
-    gears[centerG].spinDir = spins[i][1];
+private static void saveGears() throws IOException {
+    gears = new ArrayList<>();
+    br = new BufferedReader(new InputStreamReader(System.in));
 
-    for (int j = centerG - 1; j >= 0; j--) {
-        if (gears[j + 1].spinStatus) {
-            if (gears[j].tooth[2] != gears[j + 1].tooth[6]) {
-                gears[j].spinStatus = true;
-                gears[j].spinDir = gears[j + 1].spinDir * -1;
-            }
-        }
-    }
-
-    for (int j = centerG + 1; j < 4; j++) {
-        if (gears[j - 1].spinStatus) {
-            if (gears[j].tooth[6] != gears[j - 1].tooth[2]) {
-                gears[j].spinStatus = true;
-                gears[j].spinDir = gears[j - 1].spinDir * -1;
-            }
-        }
-    }
-
-    for (int j = 0; j < 4; j++) {
-        if (gears[j].spinDir == -1) gears[j].counterClockWise();
-        else if (gears[j].spinDir == 1) gears[j].clockWise();
-        gears[j].spinDir = 0;
-        gears[j].spinStatus = false;
+    for (int index = 0; index < GEARS; index++) {
+        gears.add(new StringBuilder(br.readLine()));
     }
 }
 ```
 
-- 중심 구현부는 크게 3개로 나눌 수 있다.
-  - 회전하는 톱니의 왼쪽 톱니에 대해 회전여부를 판단하고 수행하는 for문
-  - 회전하는 톱니의 오른쪽 톱니에 대해 회전여부를 판단하고 수행하는 for문
-  - 주어진 1회전이 끝난 후 톱니의 정보를 업데이트하는 for문
+- 톱니바퀴 정보를 맨 앞 삭제, 맨 뒤 삭제, 맨 앞 삽입, 맨 뒤 삽입에 용이하도록 `StringBuilder`를 사용했다.
+  - 이를 통해 시계방향 회전과 반시계방향 회전을 구현할 수 있다.
+
+```java
+private static void rotateGear(int gear, boolean isClockwise);
+```
+
+- 현재 회전할 톱니바퀴와 방향 정보를 받아 회전한다.
+- 이때 왼쪽과 오른쪽 톱니에 대해 확인하고 추가 회전이 필요하다면 재귀 호출을 수행한다.
 
 ## :black_nib: **Review**
 
-- 정말 오랜만에 1트만에 성공했다. 난이도 높은 문제는 아니었지만 ...
-- 문제 풀이를 구상하면서, 어떤 메소드를 구현해야하며, 어떤 메소드를 객체에 둬야 하는지에 대해 좀 더 공부해봐야겠다.
+- 예전보다 시간과 메모리를 조금이나마 효율적으로 사용했다.
+- 주어진 문제 풀이 순서에 맞게 함수를 나누는 것으로 좀 더 코딩을 쉽게 할 수 있었다.
