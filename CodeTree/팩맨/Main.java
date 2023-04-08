@@ -183,7 +183,6 @@ public class Main {
         int maxId = -1;
 
         for (int index = 0; index < 64; index++) {
-            boolean flag = true;
             int eat = 0;
             boolean[][] used = new boolean[SIZE][SIZE];
 
@@ -197,7 +196,7 @@ public class Main {
                 ny = ny + moves[route[d]][1];
 
                 if (!isIn(nx, ny)) {
-                    flag = false;
+                    eat = -1;
                     break;
                 }
 
@@ -207,7 +206,7 @@ public class Main {
                 }
             }
 
-            if (flag && eat > max) {
+            if (eat > max) {
                 max = eat;
                 maxId = index;
             }
@@ -251,7 +250,6 @@ public class Main {
             for (int y = 0; y < SIZE; y++) {
                 for (int d = 0; d < 8; d++) {
                     monsters[x][y][d] += eggs[x][y][d];
-                    eggs[x][y][d] = 0;
                 }
             }
         }
